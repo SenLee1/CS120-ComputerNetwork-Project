@@ -1,13 +1,8 @@
 ﻿  Main.cpp
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(69,63): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
-          with
-          [
-              _Ty=float
-          ]
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(121,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(122,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(126,33): warning C4018: “<”: 有符号/无符号不匹配
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(127,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(345,26): warning C4100: “argv”: 未引用的形参
-D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(345,14): warning C4100: “argc”: 未引用的形参
+D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(85,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(86,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(90,33): warning C4018: “<”: 有符号/无符号不匹配
+D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(91,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(294,26): warning C4100: “argv”: 未引用的形参
+D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(294,14): warning C4100: “argc”: 未引用的形参
   MySoundPlayer_ConsoleApp.vcxproj -> D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Builds\VisualStudio2019\x64\Debug\ConsoleApp\MySoundPlayer.exe

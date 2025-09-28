@@ -10,18 +10,17 @@ using namespace juce;
 
 class IntegratedAudioSystem : public AudioIODeviceCallback {
 private:
-    // 录音数据存储
-    std::vector<float> recordedData;
-    std::vector<float> predefinedWave;  // 预定义波形
-    std::vector<float> mp3Buffer;       // MP3音频数据缓存
+    std::vector<float> recordedData;    // data for recorded audio
+    std::vector<float> mp3Buffer;       // data for MP3 audio
 
-    // 状态控制
-    std::atomic<size_t> playPosition{ 0 };
-    std::atomic<size_t> mp3PlayPosition{ 0 };
+	std::atomic<size_t> playPosition{ 0 };   // current playback position
+	std::atomic<size_t> mp3PlayPosition{ 0 }; // current MP3 playback position
+
+    // current state
     std::atomic<bool> isRecording{ false };
     std::atomic<bool> isPlaying{ false };
-    std::atomic<bool> isPlayingPredefined{ false };
     std::atomic<bool> isPlayingMP3{ false };
+
     std::atomic<size_t> recordingDuration{ 0 };
     std::atomic<size_t> maxRecordingSamples{ 0 };
     std::atomic<bool> autoStopEnabled{ false };
@@ -31,88 +30,53 @@ private:
 
 public:
     IntegratedAudioSystem() {
-        std::cout << "集成音频系统初始化" << std::endl;
         formatManager.registerBasicFormats();
-        generatePredefinedWave();  // 生成预定义声音
     }
 
-    ~IntegratedAudioSystem() {
-        std::cout << "集成音频系统析构" << std::endl;
-    }
+    ~IntegratedAudioSystem() {}
 
-    // ==================== 功能1: 预定义声音相关 ====================
+    // ================== 功能1 ===============
 
-    // 生成预定义声音（和弦）
-    void generatePredefinedWave() {
-        size_t sampleRate = 48000;
-        size_t waveDuration = sampleRate * 10;  // 10秒
-
-        predefinedWave.resize(waveDuration);
-
-        double freq1 = 440.0;   // A4
-        double freq2 = 523.25;  // C5
-        double freq3 = 659.25;  // E5
-        double amp = 0.3;
-
-        for (size_t i = 0; i < waveDuration; i++) {
-            double t = (double)i / sampleRate;
-
-            double sample1 = amp * 0.5 * sin(2.0 * 3.141592653589793 * freq1 * t);
-            double sample2 = amp * 0.3 * sin(2.0 * 3.141592653589793 * freq2 * t);
-            double sample3 = amp * 0.2 * sin(2.0 * 3.141592653589793 * freq3 * t);
-
-            // 包络控制
-            double envelope = 1.0;
-            if (t < 0.1) envelope = t / 0.1;
-            if (t > 9.9) envelope = (10.0 - t) / 0.1;
-
-            predefinedWave[i] = (sample1 + sample2 + sample3) * envelope;
-        }
-
-        std::cout << "预定义声音生成完成" << std::endl;
-    }
-
-    // 功能1: 录制10秒（自动停止）
+    // 1: record for 10s
     void startRecording10Seconds(int sampleRate = 48000) {
         recordedData.clear();
         isRecording = true;
         isPlaying = false;
-        isPlayingPredefined = false;
         isPlayingMP3 = false;
         playPosition = 0;
         recordingDuration = 0;
         maxRecordingSamples = sampleRate * 10;
         autoStopEnabled = true;
 
-        std::cout << "开始10秒录音..." << std::endl;
-        std::cout << "请说话或制造声音..." << std::endl;
+        std::cout << "Start recording..." << std::endl;
+        std::cout << "Please speak..." << std::endl;
 
         startTimer(10);
     }
 
-    // ==================== 功能2: MP3文件相关 ====================
+    // ================= 功能2==================
 
-    // 加载MP3文件
+    // load the MP3 file
     bool loadMP3File(const String& filePath) {
         mp3Buffer.clear();
         mp3PlayPosition = 0;
 
         File audioFile(filePath);
         if (!audioFile.existsAsFile()) {
-            std::cout << "错误: 文件不存在: " << filePath << std::endl;
+            std::cout << "error: file not exist: " << filePath << std::endl;
             return false;
         }
 
         std::unique_ptr<AudioFormatReader> reader(formatManager.createReaderFor(audioFile));
         if (reader == nullptr) {
-            std::cout << "错误: 无法读取音频文件或格式不支持" << std::endl;
+            std::cout << "error: unknown file type" << std::endl;
             return false;
         }
 
         std::cout << "音频文件信息:" << std::endl;
         std::cout << " - 采样率: " << reader->sampleRate << " Hz" << std::endl;
         std::cout << " - 声道数: " << reader->numChannels << std::endl;
-        std::cout << " - 时长: " << (reader->lengthInSamples / reader->sampleRate) << " 秒" << std::endl;
+        std::cout << " - 时长: " << (reader->lengthInSamples / reader->sampleRate) << " s" << std::endl;
 
         // 读取并转换为单声道
         size_t totalSamples = reader->lengthInSamples;
@@ -129,14 +93,14 @@ public:
             mp3Buffer[i] = mixedSample / reader->numChannels;
         }
 
-        std::cout << "音频文件加载成功" << std::endl;
+        std::cout << "Audio file loaded successfully" << std::endl;
         return true;
     }
 
-    // 功能2: 播放MP3并同时录音10秒
+    // 2: 播放MP3并同时录音10秒
     void startPlayMP3AndRecord(int sampleRate = 48000) {
         if (mp3Buffer.empty()) {
-            std::cout << "错误: 请先加载MP3文件" << std::endl;
+            std::cout << "error: please load the mp3 file first" << std::endl;
             return;
         }
 
@@ -144,35 +108,34 @@ public:
         isRecording = true;
         isPlayingMP3 = true;
         isPlaying = false;
-        isPlayingPredefined = false;
         playPosition = 0;
         mp3PlayPosition = 0;
         recordingDuration = 0;
         maxRecordingSamples = sampleRate * 10;
         autoStopEnabled = true;
 
-        std::cout << "开始播放MP3并同时录音..." << std::endl;
-        std::cout << "请在此期间说话..." << std::endl;
+        std::cout << "Playing the MP3 audio and recording..." << std::endl;
+        std::cout << "Please speak..." << std::endl;
 
         startTimer(10);
     }
 
-    // ==================== 通用控制函数 ====================
+    // =================== 通用控制函数 ================
 
     // 启动定时器
     void startTimer(int seconds) {
         std::thread([this, seconds]() {
             for (int i = seconds; i > 0; --i) {
-                if (!isRecording && !isPlayingMP3 && !isPlayingPredefined) break;
+                if (!isRecording && !isPlayingMP3) break;
 
-                std::cout << "剩余时间: " << i << " 秒" << std::endl;
+                std::cout << "Remaining time: " << i << " s" << std::endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
 
             // 时间到，自动停止
             if (isRecording) {
                 stopAll();
-                std::cout << "时间到，自动停止" << std::endl;
+                std::cout << "10s has been reached，recording stopped" << std::endl;
             }
             }).detach();
     }
@@ -181,33 +144,30 @@ public:
     void stopAll() {
         isRecording = false;
         isPlaying = false;
-        isPlayingPredefined = false;
         isPlayingMP3 = false;
         autoStopEnabled = false;
-        std::cout << "所有活动已停止" << std::endl;
-        std::cout << "最终录制样本数: " << recordedData.size() << std::endl;
+        std::cout << "All activities have been stopped" << std::endl;
+        std::cout << "Final sample #: " << recordedData.size() << std::endl;
     }
 
     // 播放录音
     void startPlayingRecording() {
         if (recordedData.empty()) {
-            std::cout << "错误：没有录音数据可播放" << std::endl;
+            std::cout << "error：no record audio, please record first" << std::endl;
             return;
         }
         isPlaying = true;
         isRecording = false;
-        isPlayingPredefined = false;
         isPlayingMP3 = false;
         playPosition = 0;
-        std::cout << "开始播放录音..." << std::endl;
+        std::cout << "Start playing the audio..." << std::endl;
     }
 
     // 停止播放
     void stopPlaying() {
         isPlaying = false;
-        isPlayingPredefined = false;
         isPlayingMP3 = false;
-        std::cout << "停止播放" << std::endl;
+        std::cout << "Stop playing the audio..." << std::endl;
     }
 
     // 音量限制函数
@@ -217,7 +177,7 @@ public:
         return sample;
     }
 
-    // ==================== 音频回调核心函数 ====================
+    // ================ 音频回调核心函数 ===============
 
     void audioDeviceIOCallback(const float** inputChannelData,
         int numInputChannels,
@@ -244,19 +204,13 @@ public:
             for (int i = 0; i < numSamples; i++) {
                 float outputSample = 0.0f;
 
-                // 播放预定义声音（功能1）
-                if (isPlayingPredefined && playPosition < predefinedWave.size()) {
-                    outputSample += predefinedWave[playPosition];
-                    playPosition++;
-                }
-
-                // 播放MP3音乐（功能2）
+                // 播放MP3音乐
                 if (isPlayingMP3 && mp3PlayPosition < mp3Buffer.size()) {
                     outputSample += mp3Buffer[mp3PlayPosition] * 0.7f;
                     mp3PlayPosition++;
                 }
 
-                // 播放录音（通用）
+                // 播放录音
                 if (isPlaying && playPosition < recordedData.size()) {
                     outputSample += recordedData[playPosition];
                     playPosition++;
@@ -274,7 +228,7 @@ public:
             }
         }
         else {
-            // 静音输出
+            // 无输出
             for (int channel = 0; channel < numOutputChannels; channel++) {
                 if (outputChannelData[channel] != nullptr) {
                     for (int i = 0; i < numSamples; i++) {
@@ -292,25 +246,21 @@ public:
     void checkPlaybackCompletion() {
         if (isPlaying && playPosition >= recordedData.size()) {
             isPlaying = false;
-            std::cout << "录音播放完毕" << std::endl;
-        }
-        if (isPlayingPredefined && playPosition >= predefinedWave.size()) {
-            isPlayingPredefined = false;
-            std::cout << "预定义声音播放完毕" << std::endl;
+            std::cout << "Record audio playing finished" << std::endl;
         }
         if (isPlayingMP3 && mp3PlayPosition >= mp3Buffer.size()) {
             isPlayingMP3 = false;
-            std::cout << "MP3播放完毕" << std::endl;
+            std::cout << "MP3 playing finished" << std::endl;
         }
     }
 
     void audioDeviceAboutToStart(AudioIODevice* device) override {
-        std::cout << "音频设备: " << device->getName() << std::endl;
-        std::cout << "采样率: " << device->getCurrentSampleRate() << " Hz" << std::endl;
+        std::cout << "Audio device: " << device->getName() << std::endl;
+        std::cout << "Sample rate: " << device->getCurrentSampleRate() << " Hz" << std::endl;
     }
 
     void audioDeviceStopped() override {
-        std::cout << "音频设备已停止" << std::endl;
+        std::cout << "Audio device has stopped" << std::endl;
     }
 
     // ==================== 工具函数 ====================
@@ -323,13 +273,12 @@ public:
         recordedData.clear();
         playPosition = 0;
         recordingDuration = 0;
-        std::cout << "已清空录音数据" << std::endl;
+        std::cout << "Audio data have been cleared" << std::endl;
     }
 
     void printStatus() {
         std::cout << "=== 系统状态 ===" << std::endl;
         std::cout << "录音数据: " << recordedData.size() << " 样本" << std::endl;
-        std::cout << "预定义声音: " << (predefinedWave.empty() ? "未就绪" : "就绪") << std::endl;
         std::cout << "MP3文件: " << (mp3Buffer.empty() ? "未加载" : "已加载") << std::endl;
         std::cout << "录音状态: " << (isRecording ? "进行中" : "停止") << std::endl;
         std::cout << "播放状态: " << (isPlaying ? "进行中" : "停止") << std::endl;
@@ -395,7 +344,7 @@ int main(int argc, char* argv[]) {
         }
         else if (command == "l") {  // 加载MP3
             if (argument.empty()) {
-                std::cout << "请提供文件路径，例如: l C:/preaudio.mp3" << std::endl;
+                std::cout << "请提供文件路径:" << std::endl;
             }
             else {
                 String filePath = argument;
