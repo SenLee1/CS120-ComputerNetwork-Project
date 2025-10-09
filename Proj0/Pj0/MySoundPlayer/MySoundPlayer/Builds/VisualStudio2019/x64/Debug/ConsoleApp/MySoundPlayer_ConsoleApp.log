@@ -1,4 +1,17 @@
 ﻿  Main.cpp
+  BinaryData.cpp
+  include_juce_audio_basics.cpp
+  include_juce_audio_devices.cpp
+  include_juce_audio_formats.cpp
+  include_juce_audio_processors.cpp
+  include_juce_audio_utils.cpp
+  include_juce_core.cpp
+  include_juce_data_structures.cpp
+  include_juce_events.cpp
+  include_juce_graphics.cpp
+  include_juce_gui_basics.cpp
+  include_juce_gui_extra.cpp
+D:\Courses\4.1\CN\Settings\JUCE\modules\juce_core\text\juce_CharacterFunctions.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (编译源文件 ..\..\JuceLibraryCode\include_juce_core.cpp)
 D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(85,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
 D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(86,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
 D:\Courses\4.1\CN\Projs\Proj0\Pj0\MySoundPlayer\MySoundPlayer\Source\Main.cpp(90,33): warning C4018: “<”: 有符号/无符号不匹配

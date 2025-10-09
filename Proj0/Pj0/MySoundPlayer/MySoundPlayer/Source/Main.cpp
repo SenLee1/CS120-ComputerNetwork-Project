@@ -5,6 +5,7 @@
 #include <thread>
 #include <chrono>
 #include <algorithm>
+#include <cmath>
 
 using namespace juce;
 
@@ -12,14 +13,17 @@ class IntegratedAudioSystem : public AudioIODeviceCallback {
 private:
     std::vector<float> recordedData;    // data for recorded audio
     std::vector<float> mp3Buffer;       // data for MP3 audio
+    std::vector<float> generatedWave;   // data for generated sound wave
 
-	std::atomic<size_t> playPosition{ 0 };   // current playback position
-	std::atomic<size_t> mp3PlayPosition{ 0 }; // current MP3 playback position
+    std::atomic<size_t> playPosition{ 0 };   // current playback position
+    std::atomic<size_t> mp3PlayPosition{ 0 }; // current MP3 playback position
+    std::atomic<size_t> wavePlayPosition{ 0 }; // current generated wave playback position
 
     // current state
     std::atomic<bool> isRecording{ false };
     std::atomic<bool> isPlaying{ false };
     std::atomic<bool> isPlayingMP3{ false };
+    std::atomic<bool> isPlayingGeneratedWave{ false };
 
     std::atomic<size_t> recordingDuration{ 0 };
     std::atomic<size_t> maxRecordingSamples{ 0 };
@@ -43,6 +47,7 @@ public:
         isRecording = true;
         isPlaying = false;
         isPlayingMP3 = false;
+        isPlayingGeneratedWave = false;
         playPosition = 0;
         recordingDuration = 0;
         maxRecordingSamples = sampleRate * 10;
@@ -108,6 +113,7 @@ public:
         isRecording = true;
         isPlayingMP3 = true;
         isPlaying = false;
+        isPlayingGeneratedWave = false;
         playPosition = 0;
         mp3PlayPosition = 0;
         recordingDuration = 0;
@@ -118,6 +124,87 @@ public:
         std::cout << "Please speak..." << std::endl;
 
         startTimer(10);
+    }
+
+    // ================== 功能3: 生成声波 ================
+
+    // 3: 生成并播放特定声波 f(t) = sin(2π·1000t) + sin(2π·10000t)
+    void generateAndPlayWave(double duration = 5.0, int sampleRate = 48000) {
+        generatedWave.clear();
+        wavePlayPosition = 0;
+
+        size_t totalSamples = static_cast<size_t>(duration * sampleRate);
+        generatedWave.resize(totalSamples);
+
+        double f1 = 1000.0;  // 1 kHz
+        double f2 = 10000.0; // 10 kHz
+
+        std::cout << "Generating sound wave: f(t) = sin(2π·" << f1 << "t) + sin(2π·" << f2 << "t)" << std::endl;
+        std::cout << "Duration: " << duration << " seconds" << std::endl;
+        std::cout << "Sample rate: " << sampleRate << " Hz" << std::endl;
+
+        // 生成声波样本
+        for (size_t i = 0; i < totalSamples; ++i) {
+            double t = static_cast<double>(i) / sampleRate;
+            double sample = std::sin(2.0 * MathConstants<double>::pi * f1 * t)
+                + std::sin(2.0 * MathConstants<double>::pi * f2 * t);
+
+            // 归一化到 [-1, 1] 范围
+            generatedWave[i] = static_cast<float>(sample * 0.5); // 乘以0.5防止削波
+        }
+
+        isPlayingGeneratedWave = true;
+        isRecording = false;
+        isPlaying = false;
+        isPlayingMP3 = false;
+
+        std::cout << "Sound wave generated successfully. Total samples: " << totalSamples << std::endl;
+        std::cout << "Playing generated sound wave..." << std::endl;
+
+        // 设置自动停止
+        std::thread([this, duration]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(duration * 1000)));
+            if (isPlayingGeneratedWave) {
+                isPlayingGeneratedWave = false;
+                std::cout << "Generated wave playback finished" << std::endl;
+            }
+            }).detach();
+    }
+
+    // 生成自定义频率的声波
+    void generateCustomWave(double freq1, double freq2, double duration = 5.0, int sampleRate = 48000) {
+        generatedWave.clear();
+        wavePlayPosition = 0;
+
+        size_t totalSamples = static_cast<size_t>(duration * sampleRate);
+        generatedWave.resize(totalSamples);
+
+        std::cout << "Generating custom sound wave: f(t) = sin(2π·" << freq1 << "t) + sin(2π·" << freq2 << "t)" << std::endl;
+        std::cout << "Duration: " << duration << " seconds" << std::endl;
+        std::cout << "Sample rate: " << sampleRate << " Hz" << std::endl;
+
+        for (size_t i = 0; i < totalSamples; ++i) {
+            double t = static_cast<double>(i) / sampleRate;
+            double sample = std::sin(2.0 * MathConstants<double>::pi * freq1 * t)
+                + std::sin(2.0 * MathConstants<double>::pi * freq2 * t);
+            generatedWave[i] = static_cast<float>(sample * 0.5);
+        }
+
+        isPlayingGeneratedWave = true;
+        isRecording = false;
+        isPlaying = false;
+        isPlayingMP3 = false;
+
+        std::cout << "Custom sound wave generated successfully" << std::endl;
+        std::cout << "Playing custom sound wave..." << std::endl;
+
+        std::thread([this, duration]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(duration * 1000)));
+            if (isPlayingGeneratedWave) {
+                isPlayingGeneratedWave = false;
+                std::cout << "Custom wave playback finished" << std::endl;
+            }
+            }).detach();
     }
 
     // =================== 通用控制函数 ================
@@ -145,6 +232,7 @@ public:
         isRecording = false;
         isPlaying = false;
         isPlayingMP3 = false;
+        isPlayingGeneratedWave = false;
         autoStopEnabled = false;
         std::cout << "All activities have been stopped" << std::endl;
         std::cout << "Final sample #: " << recordedData.size() << std::endl;
@@ -159,6 +247,7 @@ public:
         isPlaying = true;
         isRecording = false;
         isPlayingMP3 = false;
+        isPlayingGeneratedWave = false;
         playPosition = 0;
         std::cout << "Start playing the audio..." << std::endl;
     }
@@ -167,6 +256,7 @@ public:
     void stopPlaying() {
         isPlaying = false;
         isPlayingMP3 = false;
+        isPlayingGeneratedWave = false;
         std::cout << "Stop playing the audio..." << std::endl;
     }
 
@@ -216,6 +306,12 @@ public:
                     playPosition++;
                 }
 
+                // 播放生成的声波
+                if (isPlayingGeneratedWave && wavePlayPosition < generatedWave.size()) {
+                    outputSample += generatedWave[wavePlayPosition];
+                    wavePlayPosition++;
+                }
+
                 // 限制音量
                 outputSample = limitVolume(outputSample);
 
@@ -252,6 +348,10 @@ public:
             isPlayingMP3 = false;
             std::cout << "MP3 playing finished" << std::endl;
         }
+        if (isPlayingGeneratedWave && wavePlayPosition >= generatedWave.size()) {
+            isPlayingGeneratedWave = false;
+            std::cout << "Generated wave playing finished" << std::endl;
+        }
     }
 
     void audioDeviceAboutToStart(AudioIODevice* device) override {
@@ -280,12 +380,18 @@ public:
         std::cout << "=== 系统状态 ===" << std::endl;
         std::cout << "录音数据: " << recordedData.size() << " 样本" << std::endl;
         std::cout << "MP3文件: " << (mp3Buffer.empty() ? "未加载" : "已加载") << std::endl;
+        std::cout << "生成波形: " << (generatedWave.empty() ? "未生成" : "已生成") << std::endl;
         std::cout << "录音状态: " << (isRecording ? "进行中" : "停止") << std::endl;
         std::cout << "播放状态: " << (isPlaying ? "进行中" : "停止") << std::endl;
+        std::cout << "生成波形播放: " << (isPlayingGeneratedWave ? "进行中" : "停止") << std::endl;
 
         if (!recordedData.empty()) {
             double duration = recordedData.size() / 48000.0;
             std::cout << "录音时长: " << duration << " 秒" << std::endl;
+        }
+        if (!generatedWave.empty()) {
+            double duration = generatedWave.size() / 48000.0;
+            std::cout << "生成波形时长: " << duration << " 秒" << std::endl;
         }
     }
 };
@@ -295,6 +401,7 @@ int main(int argc, char* argv[]) {
     std::cout << "=== 集成音频系统 ===" << std::endl;
     std::cout << "功能1: 录制10秒音频并播放" << std::endl;
     std::cout << "功能2: 播放MP3文件并同时录音" << std::endl;
+    std::cout << "功能3: 生成并播放声波 f(t) = sin(2π·1000t) + sin(2π·10000t)" << std::endl;
     std::cout << "=========================================" << std::endl;
 
     // 初始化音频设备
@@ -315,6 +422,8 @@ int main(int argc, char* argv[]) {
     std::cout << "\n=== 功能菜单 ===" << std::endl;
     std::cout << "1 - 功能1: 录制10秒（自动停止）" << std::endl;
     std::cout << "2 - 功能2: 播放MP3并录音10秒" << std::endl;
+    std::cout << "3 - 功能3: 生成并播放1kHz+10kHz声波" << std::endl;
+    std::cout << "4 - 自定义: 生成两个指定频率的声波" << std::endl;
     std::cout << "l <路径> - 加载MP3文件" << std::endl;
     std::cout << "p - 播放录音" << std::endl;
     std::cout << "x - 停止播放" << std::endl;
@@ -324,6 +433,7 @@ int main(int argc, char* argv[]) {
     std::cout << "q - 退出程序" << std::endl;
     std::cout << "==================" << std::endl;
     std::cout << "MP3文件示例: l C:/preaudio.mp3" << std::endl;
+    std::cout << "自定义频率示例: 4 1000 2000 (生成1kHz和2kHz的声波)" << std::endl;
 
     bool running = true;
     while (running) {
@@ -341,6 +451,18 @@ int main(int argc, char* argv[]) {
         }
         else if (command == "2") {  // 功能2
             audioSystem->startPlayMP3AndRecord();
+        }
+        else if (command == "3") {  // 功能3: 生成1kHz+10kHz声波
+            audioSystem->generateAndPlayWave(5.0, 48000);
+        }
+        else if (command == "4") {  // 自定义频率声波
+            double freq1, freq2;
+            if (sscanf(argument.c_str(), "%lf %lf", &freq1, &freq2) == 2) {
+                audioSystem->generateCustomWave(freq1, freq2, 5.0, 48000);
+            }
+            else {
+                std::cout << "错误: 请提供两个频率参数，例如: 4 1000 2000" << std::endl;
+            }
         }
         else if (command == "l") {  // 加载MP3
             if (argument.empty()) {
