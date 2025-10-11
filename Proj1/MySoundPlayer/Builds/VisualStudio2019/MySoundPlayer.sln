@@ -1,5 +1,6 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2019
+# Visual Studio Version 16
 
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MySoundPlayer - ConsoleApp", "MySoundPlayer_ConsoleApp.vcxproj", "{B205100E-FF81-D1F9-02A4-790DE185FD98}"
 EndProject

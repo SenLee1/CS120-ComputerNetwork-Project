@@ -1,4 +1,4 @@
-﻿#include <JuceHeader.h>
+#include <JuceHeader.h>
 #include <iostream>
 #include <vector>
 #include <atomic>

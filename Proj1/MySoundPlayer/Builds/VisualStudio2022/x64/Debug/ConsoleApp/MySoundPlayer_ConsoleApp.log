@@ -1,0 +1,25 @@
+﻿  Main.cpp
+  BinaryData.cpp
+  include_juce_audio_basics.cpp
+  include_juce_audio_devices.cpp
+  include_juce_audio_formats.cpp
+  include_juce_audio_processors_ara.cpp
+  include_juce_audio_processors_lv2_libs.cpp
+  include_juce_audio_utils.cpp
+  include_juce_core.cpp
+  include_juce_data_structures.cpp
+  include_juce_events.cpp
+  include_juce_graphics.cpp
+  include_juce_gui_extra.cpp
+D:\JUCE\modules\juce_core\text\juce_CharacterFunctions.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“../../JuceLibraryCode/include_juce_core.cpp”)
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(93,60): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(94,38): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(98,33): warning C4018: “<”: 有符号/无符号不匹配
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(99,57): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(360,26): warning C4100: 'argv': 未引用的参数
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(360,14): warning C4100: 'argc': 未引用的参数
+  include_juce_audio_processors.cpp
+  include_juce_gui_basics.cpp
+  MySoundPlayer_ConsoleApp.vcxproj -> D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Builds\VisualStudio2022\x64\Debug\ConsoleApp\MySoundPlayer.exe
