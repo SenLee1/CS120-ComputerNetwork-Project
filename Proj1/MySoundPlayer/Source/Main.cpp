@@ -341,7 +341,7 @@ public:
         std::cout << "录音数据: " << recordedData.size() << " 样本" << std::endl;
         std::cout << "MP3文件: " << (mp3Buffer.empty() ? "未加载" : "已加载") << std::endl;
         std::cout << "生成波形: " << (generatedWave.empty() ? "未生成" : "已生成") << std::endl;
-        std::cout << "录音状态: " << (isRecording ? "进行中" : "停止") << std::endl;
+        std::cout << "录音状态: " << (isRecording ? "进行中" : "停止")<< std::endl;
         std::cout << "播放状态: " << (isPlaying ? "进行中" : "停止") << std::endl;
         std::cout << "生成波形播放: " << (isPlayingGeneratedWave ? "进行中" : "停止") << std::endl;
 
