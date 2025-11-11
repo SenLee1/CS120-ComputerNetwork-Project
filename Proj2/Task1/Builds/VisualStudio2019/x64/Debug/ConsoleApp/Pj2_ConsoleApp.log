@@ -1,0 +1,4 @@
+﻿  Main.cpp
+D:\Courses\4.1\CN\Project_Local\Project2\Pj2\Source\Main.cpp(738,26): warning C4100: “argv”: 未引用的形参
+D:\Courses\4.1\CN\Project_Local\Project2\Pj2\Source\Main.cpp(738,14): warning C4100: “argc”: 未引用的形参
+  Pj2_ConsoleApp.vcxproj -> D:\Courses\4.1\CN\Project_Local\Project2\Pj2\Builds\VisualStudio2019\x64\Debug\ConsoleApp\Pj2.exe
