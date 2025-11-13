@@ -1,4 +1,4 @@
-﻿#include <JuceHeader.h>
+#include <JuceHeader.h>
 #include <iostream>
 #include <vector>
 #include <atomic>
@@ -8,48 +8,37 @@
 #include <queue>
 #include <deque>
 
-// 使用 juce 命名空间
 using namespace juce;
 
 // ==============================================================================
-// 物理层和帧配置
+// Physical Layer and Frame Settings
 // ==============================================================================
 
-/**
- * @brief 物理层参数配置
- */
+// Arguments
 struct PhyConfig
 {
-    // 比特率 (bps)
-    // 6,000 bps @ 48,000 Hz = 8 个采样点/比特 (samplesPerBit)
+    // 6,000 bps @ 48,000 Hz = 8 samplesPerBit
     static constexpr int BIT_RATE = 6000;
 
-    // 曼彻斯特编码的信号幅度
+    // Signal amplitude
     static constexpr float SIGNAL_AMPLITUDE = 0.5f;
 
-    // 接收时检测信号的能量阈值
-    // !! 注意：这个值可能需要根据你的声卡和混音器进行调整
+    // Signal Threshold for energy when receiving
     static constexpr float ENERGY_THRESHOLD = 0.001f;
 };
 
-/**
- * @brief 帧结构配置
- */
+// Frame Structure
 struct FrameConfig
 {
-    // 前导码字节
+    // preamble byte
     static constexpr uint8_t PREAMBLE_BYTE = 0x55; // 01010101
-    // 前导码长度（字节）
+
+    // preamble length
     static constexpr int PREAMBLE_LENGTH_BYTES = 4;
 
-    // 帧起始符 (Start of Frame)
+    // Start of Frame
     static constexpr uint8_t SOF_BYTE = 0x7E; // 01111110
 };
-
-
-// ==============================================================================
-// 核心音频网络系统类 (替换你的 IntegratedAudioSystem)
-// ==============================================================================
 
 class AudioNetworkSystem : public AudioIODeviceCallback
 {
@@ -71,45 +60,35 @@ public:
         calculatedChecksum(0),
         completionFlag(0)
     {
-        // 找到桌面路径 (用于 INPUT.bin 和 OUTPUT.bin)
+        // Input and Output File Path
         File desktop = File::getSpecialLocation(File::userDesktopDirectory);
         inputFile = desktop.getChildFile("INPUT.bin");
         outputFile = desktop.getChildFile("OUTPUT.bin");
 
-        // (新功能) 设置 WAV 文件的保存路径
+        // set Path for Saving WAV File
         outputWavFile = outputFile.getSiblingFile("generated_signal.wav");
 
         std::cout << "Input file: " << inputFile.getFullPathName() << std::endl;
         std::cout << "Output file: " << outputFile.getFullPathName() << std::endl;
-        std::cout << "调试波形将保存至: " << outputWavFile.getFullPathName() << std::endl;
+        std::cout << "Waves Saved At: " << outputWavFile.getFullPathName() << std::endl;
 
-        // (新功能) 注册 WAV 格式以便保存
+        // Register WAV format for saving
         formatManager.registerBasicFormats();
     }
 
     ~AudioNetworkSystem() {}
 
-    // ==========================================================================
-    // JUCE 音频回调
-    // ==========================================================================
-
-    /**
-     * @brief 音频设备打开时调用 (替代 prepareToPlay)
-     */
     void audioDeviceAboutToStart(AudioIODevice* device) override
     {
         currentSampleRate = device->getCurrentSampleRate();
+        std::cout << "Devices Start:" << device->getName() << std::endl;
+        std::cout << "Sample Rate" << currentSampleRate << "Hz" << std::endl;
 
-        std::cout << "\n音频设备已启动: " << device->getName() << std::endl;
-        std::cout << "采样率: " << currentSampleRate << " Hz" << std::endl;
-
-        // 检查采样率是否能被比特率整除
+        // Check SampleRate
         if (fmod(currentSampleRate, PhyConfig::BIT_RATE) != 0.0)
         {
-            std::cerr << "!!!! 严重错误：采样率 (" << currentSampleRate
-                << ") 无法被比特率 (" << PhyConfig::BIT_RATE << ") 整除！" << std::endl;
-            std::cerr << "!!!! 请确保采样率设置为 48000 Hz。" << std::endl;
-            // 可以在这里设置一个错误状态
+            std::cerr << "Error: SampleRate (" << currentSampleRate << ") can not exactly divided by (" << PhyConfig::BIT_RATE << ")" << std::endl;
+            std::cerr << "Ensure SampleRate 48000 Hz." << std::endl;
             return;
         }
 
@@ -117,33 +96,24 @@ public:
         samplesPerBit = (int)(currentSampleRate / PhyConfig::BIT_RATE);
         samplesPerHalfBit = samplesPerBit / 2;
 
-        std::cout << "比特率: " << PhyConfig::BIT_RATE << " bps" << std::endl;
-        std::cout << "每个比特的采样点数: " << samplesPerBit << std::endl;
+        std::cout << "BitRate: " << PhyConfig::BIT_RATE << " bps" << std::endl;
+        std::cout << "SamplePerBit: " << samplesPerBit << std::endl;
     }
 
-    /**
-     * @brief 音频设备关闭时调用
-     */
+    // 音频设备关闭时调用
     void audioDeviceStopped() override
     {
-        std::cout << "\n音频设备已停止。" << std::endl;
+        std::cout << "\nDevice Stopped" << std::endl;
     }
 
-    /**
-     * @brief 核心音频处理回调（高优先级音频线程）
-     */
-    void audioDeviceIOCallback(const float** inputChannelData,
-        int numInputChannels,
-        float** outputChannelData,
-        int numOutputChannels,
-        int numSamples) override
+    // 核心音频处理回调（高优先级音频线程）
+    void audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples) override
     {
-        // 获取主输入/输出缓冲区
-        // 我们假设通道 0 是我们想要的
+        // 获取主输入/输出缓冲区,假定为通道0
         const float* inBuffer = (numInputChannels > 0) ? inputChannelData[0] : nullptr;
         float* outBuffer = (numOutputChannels > 0) ? outputChannelData[0] : nullptr;
 
-        // --- 1. 发送端逻辑 ---
+        // --- 发送端逻辑 ---
         if (senderState == SenderState::Sending && outBuffer != nullptr)
         {
             for (int i = 0; i < numSamples; ++i)
@@ -175,7 +145,7 @@ public:
             std::memset(outBuffer, 0, numSamples * sizeof(float));
         }
 
-        // --- 2. 接收端逻辑 ---
+        // --- 接收端逻辑 ---
         if (receiverState != ReceiverState::Idle && inBuffer != nullptr)
         {
             // 在这个音频块中处理每个采样点
@@ -183,6 +153,7 @@ public:
             {
                 processReceivedSample(inBuffer[i]);
             }
+           
         }
     }
 
@@ -191,22 +162,20 @@ public:
     // 公共控制函数 (由 main() 调用)
     // ==========================================================================
 
-    /**
-     * @brief [Main 线程] 开始发送文件
-     */
+    // [Main 线程] 开始发送文件
     void startSendFile()
     {
         if (senderState != SenderState::Idle)
         {
-            std::cout << "错误: 正在发送中。" << std::endl;
+            std::cout << "Invalid Operation: Device is Sending" << std::endl;
             return;
         }
 
-        std::cout << "开始发送文件: " << inputFile.getFullPathName() << std::endl;
+        std::cout << "Start Sending: " << inputFile.getFullPathName() << std::endl;
 
         if (!inputFile.existsAsFile())
         {
-            std::cerr << "错误: 文件 " << inputFile.getFullPathName() << " 未找到!" << std::endl;
+            std::cerr << "Error: File " << inputFile.getFullPathName() << " is not found" << std::endl;
             return;
         }
 
@@ -216,7 +185,7 @@ public:
 
         if (!inputStream.openedOk())
         {
-            std::cerr << "错误: 无法打开文件!" << std::endl;
+            std::cerr << "Error: Failed to Open File" << std::endl;
             return;
         }
 
@@ -251,8 +220,8 @@ public:
         // -- Checksum --
         frame.push_back(checksum);
 
-        std::cout << "帧构建完毕: " << frame.size() << " 字节 (包括开销)" << std::endl;
-        std::cout << "有效载荷: " << payloadLength << " 字节" << std::endl;
+        std::cout << "Frame Construction Completed. Total byte: " << frame.size() << std::endl;
+        std::cout << "Payload Byte: " << payloadLength << std::endl;
 
         // 3. 调制帧 (将字节转换为音频样本)
         modulateFrame(frame);
@@ -264,8 +233,7 @@ public:
         }
         else
         {
-            std::cerr << "警告: 无法保存 WAV 文件 (SampleRate=" << currentSampleRate
-                << ", BufferEmpty=" << sendSampleBuffer.empty() << ")" << std::endl;
+            std::cerr << "Warning: Failed to Save WAV File (SampleRate=" << currentSampleRate << ", BufferEmpty=" << sendSampleBuffer.empty() << ")" << std::endl;
         }
 
         // 4. 设置状态为 Sending
@@ -274,14 +242,12 @@ public:
         senderState = SenderState::Sending; // 音频线程将从此开始发送
     }
 
-    /**
-     * @brief [Main 线程] 开始接收
-     */
+    // [Main 线程] 开始接收
     void startReceiving()
     {
         if (receiverState != ReceiverState::Idle)
         {
-            std::cout << "错误: 已经在接收中。" << std::endl;
+            std::cout << "Invalid Operation: Device is Receiving" << std::endl;
             return;
         }
 
@@ -298,18 +264,16 @@ public:
         completionFlag.store(0); // 清除完成标志
 
         receiverState = ReceiverState::Idle; // 等待能量检测
-        std::cout << "已切换到接收模式。正在等待信号..." << std::endl;
+        std::cout << "Receving Mode: Waiting For Signal" << std::endl;
     }
 
-    /**
-     * @brief [Main 线程] 停止所有活动
-     */
+    // [Main 线程] 停止所有活动
     void stopAll()
     {
         senderState = SenderState::Idle;
         receiverState = ReceiverState::Idle;
         completionFlag.store(9); // 9 = 手动停止
-        std::cout << "已停止所有音频活动。" << std::endl;
+        std::cout << "Succeed to Stop All Activity" << std::endl;
     }
 
     // 用于 main() 轮询
@@ -322,9 +286,7 @@ private:
     // 内部逻辑 (私有)
     // ==========================================================================
 
-    /**
-     * @brief [Main 线程] 将整个帧调制为音频样本
-     */
+    // [Main 线程] 将整个帧调制为音频样本
     void modulateFrame(const std::vector<uint8_t>& frame)
     {
         // 预分配足够的空间
@@ -361,16 +323,14 @@ private:
 
         // 记录发送缓冲区的实际结束位置
         sendSampleBufferEnd = currentSampleIndex;
-        std::cout << "调制完毕: " << sendSampleBufferEnd << " 个采样点" << std::endl;
+        std::cout << "Modulate Completed, Total Sample: " << sendSampleBufferEnd << std::endl;
 
         // 调整缓冲区大小以匹配
         sendSampleBuffer.resize(sendSampleBufferEnd);
     }
 
 
-    /**
-     * @brief [音频线程] 接收状态机 - 处理单个采样点
-     */
+    // [音频线程] 接收状态机 - 处理单个采样点
     void processReceivedSample(float sample)
     {
         // 状态机核心
@@ -461,9 +421,7 @@ private:
         } // end switch(receiverState)
     }
 
-    /**
-     * @brief [音频线程] 接收状态机 - 处理一个解码后的比特
-     */
+    // [音频线程] 接收状态机 - 处理一个解码后的比特
     void processReceivedBit(bool bit)
     {
         // 将比特推入当前字节
@@ -479,9 +437,7 @@ private:
         }
     }
 
-    /**
-     * @brief [音频线程] 接收状态机 - 处理一个完整的字节
-     */
+    // [音频线程] 接收状态机 - 处理一个完整的字节
     void processReceivedByte(uint8_t byte)
     {
         // 这是字节级别的状态机
@@ -499,7 +455,7 @@ private:
             else if (byte == FrameConfig::SOF_BYTE && preambleBytesFound >= FrameConfig::PREAMBLE_LENGTH_BYTES)
             {
                 // 找到了 SOF! 准备读取长度
-                std::cout << "\n[RX] 侦测到 SOF，正在读取长度..." << std::endl;
+                std::cout << "\n[RX] SOF Detected，Reading Length..." << std::endl;
                 receiverState = ReceiverState::ReadingLength;
                 receiverByteCount = 0; // 重置字节计数器
                 expectedPayloadLength = 0;
@@ -524,12 +480,12 @@ private:
             {
                 expectedPayloadLength |= byte; // 低位字节
 
-                std::cout << "[RX] 侦测到长度: " << expectedPayloadLength << " 字节" << std::endl;
+                std::cout << "[RX] Reading Completed: " << expectedPayloadLength << " bytes is detected" << std::endl;
 
                 // 安全检查
                 if (expectedPayloadLength == 0 || expectedPayloadLength > 10000) // 10k 字节
                 {
-                    std::cerr << "[RX] 错误: 无效的长度 " << expectedPayloadLength << std::endl;
+                    std::cerr << "[RX] Error: Invalid Length " << expectedPayloadLength << std::endl;
                     receiverState = ReceiverState::Idle; // 重置
                     preambleBytesFound = 0;
                     completionFlag.store(3); // 3 = 接收失败
@@ -556,7 +512,7 @@ private:
             if (receiverByteCount == expectedPayloadLength)
             {
                 // 有效载荷读取完毕，准备读取校验和
-                std::cout << "[RX] 有效载荷接收完毕，正在读取校验和..." << std::endl;
+                std::cout << "[RX] Receving Payload Completed，Start Reading and Checking..." << std::endl;
                 receiverState = ReceiverState::ReadingChecksum;
             }
             break;
@@ -568,7 +524,7 @@ private:
             if (byte == calculatedChecksum)
             {
                 // 校验和匹配! 成功!
-                std::cout << "[RX] 校验和匹配!" << std::endl;
+                std::cout << "[RX] Check Sum Successfully!" << std::endl;
 
                 // 保存文件
                 outputFile.deleteFile(); // 删除旧文件
@@ -576,7 +532,7 @@ private:
                 if (stream.openedOk())
                 {
                     stream.write(receivedPayload.data(), receivedPayload.size());
-                    std::cout << "[RX] 文件已保存到: " << outputFile.getFullPathName() << std::endl;
+                    std::cout << "[RX] File Saved At: " << outputFile.getFullPathName() << std::endl;
                     completionFlag.store(2); // 2 = 接收成功
                 }
                 else
@@ -588,7 +544,7 @@ private:
             else
             {
                 // 校验和失败
-                std::cerr << "[RX] 校验和失败! 预期: " << (int)calculatedChecksum
+                std::cerr << "[RX] Check Sum Failed! Expectation: " << (int)calculatedChecksum
                     << ", 收到: " << (int)byte << std::endl;
                 completionFlag.store(3); // 3 = 接收失败
             }
@@ -605,9 +561,7 @@ private:
         }
     }
 
-    /**
-     * @brief (新功能) [Main 线程] 将发送缓冲区的内容保存为 WAV 文件
-     */
+    // [Main 线程] 将发送缓冲区的内容保存为 WAV 文件
     void saveSendBufferToWav(const File& fileToSave)
     {
         // 1. 确保旧文件被删除
@@ -617,7 +571,7 @@ private:
         std::unique_ptr<FileOutputStream> fileStream(fileToSave.createOutputStream());
         if (fileStream == nullptr)
         {
-            std::cerr << "错误: 无法创建 WAV 输出流。" << std::endl;
+            std::cerr << "Error: Fail to Create WAV OutputStream." << std::endl;
             return;
         }
 
@@ -634,7 +588,7 @@ private:
 
         if (writer == nullptr)
         {
-            std::cerr << "错误: 无法创建 WAV 写入器。" << std::endl;
+            std::cerr << "Error: Fail to Create WAV FormatWriter" << std::endl;
             return;
         }
 
@@ -656,7 +610,7 @@ private:
 
         // 6. 写入器析构时会自动 flush 和关闭流
 
-        std::cout << "\n[调试] 发送波形已成功保存到: " << fileToSave.getFullPathName() << std::endl;
+        std::cout << "\n[Debug] Sending WAV Saved At: " << fileToSave.getFullPathName() << std::endl;
     }
 
 
@@ -723,7 +677,7 @@ int main(int argc, char* argv[])
     juce::ScopedJuceInitialiser_GUI libraryInitialiser;
 
     std::cout << "========================================" << std::endl;
-    std::cout << "== 计算机网络项目 2 (控制台版) ==" << std::endl;
+    std::cout << "== Computer Network Project2 Controller ==" << std::endl;
     std::cout << "========================================" << std::endl;
 
     // 1. 初始化音频设备
@@ -736,16 +690,16 @@ int main(int argc, char* argv[])
     // !! 强制 48000 Hz !!
     if (dev_info.sampleRate != 48000.0)
     {
-        std::cout << "当前采样率非 48000 Hz，正在尝试设置..." << std::endl;
+        std::cout << "SampleRate is not 48000HZ. Attempting to Set it." << std::endl;
         dev_info.sampleRate = 48000.0;
         dev_manager.setAudioDeviceSetup(dev_info, false); // false = 不要重启
-
+         
         // 再次检查
         dev_manager.getAudioDeviceSetup(dev_info);
         if (dev_info.sampleRate != 48000.0)
         {
-            std::cerr << "!! 警告: 无法将采样率设置为 48000 Hz。" << std::endl;
-            std::cerr << "!! 可能会导致错误。请手动配置你的声卡。" << std::endl;
+            std::cerr << "!! Warning: Fail to Set SampleRate As 48000 Hz." << std::endl;
+            std::cerr << "!! It may lead to errors. Please configure your sound card manually." << std::endl;
         }
     }
 
@@ -757,22 +711,19 @@ int main(int argc, char* argv[])
     dev_manager.addAudioCallback(audioSystem.get());
 
     // 4. 用户界面 (控制台)
-    std::cout << "\n=== 功能菜单 ===" << std::endl;
-    std::cout << " send    - (NODE 1) 发送 INPUT.bin (并保存波形到 .wav)" << std::endl;
-    std::cout << " receive - (NODE 2) 接收并保存为 OUTPUT.bin" << std::endl;
-    std::cout << " stop    - 停止当前活动" << std::endl;
-    std::cout << " quit    - 退出程序" << std::endl;
+    std::cout << "\n=== Function Menu ===" << std::endl;
+    std::cout << " send    - (NODE 1) send INPUT.bin (save file as .wav)" << std::endl;
+    std::cout << " receive - (NODE 2) receive and save file as OUTPUT.bin" << std::endl;
+    std::cout << " stop    - stop activity" << std::endl;
+    std::cout << " quit    - exit the program" << std::endl;
     std::cout << "==================" << std::endl;
-    std::cout << "确保 INPUT.bin 文件在你的桌面上。" << std::endl;
-
-
+    std::cout << "Ensure INPUT.bin is on your desktop" << std::endl;
     bool running = true;
     while (running)
     {
-        std::cout << "\n请输入命令 (send, receive, stop, quit): ";
+        std::cout << "\nPlease Enter: (send, receive, stop, quit): ";
         std::string input;
         std::getline(std::cin, input);
-
         if (input == "send")
         {
             // 开始发送 (这个函数现在内部包含了保存WAV的逻辑)
@@ -785,7 +736,7 @@ int main(int argc, char* argv[])
                 std::this_thread::sleep_for(std::chrono::milliseconds(200));
                 std::cout << ".";
             }
-            std::cout << "\n发送完成。" << std::endl;
+            std::cout << "\nSent Completed" << std::endl;
             audioSystem->clearCompletionFlag();
         }
         else if (input == "receive")
@@ -794,7 +745,7 @@ int main(int argc, char* argv[])
             audioSystem->startReceiving();
 
             // 在主线程中等待，直到接收完成
-            std::cout << "正在等待信号... (按 'stop' 可手动停止)" << std::endl;
+            std::cout << "Waiting For Signal... (Enter 'stop' to Stop)" << std::endl;
             int flag = 0;
             while ((flag = audioSystem->getCompletionFlag()) == 0)
             {
@@ -807,15 +758,15 @@ int main(int argc, char* argv[])
             // 处理结果
             if (flag == 2)
             {
-                std::cout << "\n接收成功！文件已保存。" << std::endl;
+                std::cout << "\nReceived Successfully！File saved at." << std::endl;
             }
             else if (flag == 3)
-            {
-                std::cout << "\n接收失败！(校验和错误或长度无效)" << std::endl;
+            { 
+                std::cout << "\nReceived Failed！CheckSum Error or Invalid Length" << std::endl;
             }
             else if (flag == 9)
             {
-                std::cout << "\n接收已手动停止。" << std::endl;
+                std::cout << "\nReceiving is stopped manually" << std::endl;
             }
             audioSystem->clearCompletionFlag();
         }
@@ -829,13 +780,13 @@ int main(int argc, char* argv[])
         }
         else
         {
-            std::cout << "未知命令。" << std::endl;
+            std::cout << "Invalid Command" << std::endl;
         }
     }
 
     // 5. 清理资源
     dev_manager.removeAudioCallback(audioSystem.get());
-    std::cout << "程序结束。" << std::endl;
+    std::cout << "Program Ends" << std::endl;
 
     return 0;
 }
