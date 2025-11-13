@@ -1,0 +1,6 @@
+﻿D:\Microsoft_Visual_Studio\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(538,5): warning MSB8028: 中间目录(x64\Debug\ConsoleApp\)包含从另一个项目(Pj2_ConsoleApp.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  Main.cpp
+D:\Shanghaitech\2025fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task1\Source\Main.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Shanghaitech\2025fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task1\Source\Main.cpp(104,5): error C2059: 语法错误:“{”
+D:\Shanghaitech\2025fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task1\Source\Main.cpp(104,5): error C2334: “{”的前面有意外标记；跳过明显的函数体
+D:\Shanghaitech\2025fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task1\Source\Main.cpp(208,9): error C1075: “{”: 未找到匹配令牌
