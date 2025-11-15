@@ -1,26 +1,34 @@
 #include <JuceHeader.h>
 #include "MainComponent.h"
 
-class CS120_2_2 : public juce::JUCEApplication {
+class AudioApp : public juce::JUCEApplication {
 public:
-	CS120_2_2() = default;
+	AudioApp() = default;
 
-	const juce::String getApplicationName() override { return "CS120-2-1"; }
+	const juce::String getApplicationName() override 
+	{
+		return "AudioApp";
+	}
 
-	const juce::String getApplicationVersion() override { return "1.14.514"; }
+	const juce::String getApplicationVersion() override
+	{
+		return "1";
+	}
 
-	void initialise(const juce::String& commandLine) override {
+	void initialise(const juce::String& commandLine) override
+	{
 		mainWindow.reset(new MainWindow(getApplicationName(), new MainComponent, *this));
 	}
 
-	void shutdown() override { mainWindow = nullptr; }
+	void shutdown() override
+	{
+		mainWindow = nullptr;
+	}
 
 	class MainWindow : public juce::DocumentWindow {
 	public:
 		MainWindow(const juce::String& name, juce::Component* c, JUCEApplication& a) :
-			DocumentWindow(name, juce::Desktop::getInstance().getDefaultLookAndFeel()
-				.findColour(ResizableWindow::backgroundColourId),
-				juce::DocumentWindow::allButtons), app(a) {
+			DocumentWindow(name, juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(ResizableWindow::backgroundColourId), juce::DocumentWindow::allButtons), app(a) {
 			setUsingNativeTitleBar(true);
 			setContentOwned(c, true);
 			setResizable(false, false);
@@ -28,15 +36,17 @@ public:
 			setVisible(true);
 		}
 
-		void closeButtonPressed() override { app.systemRequestedQuit(); }
+		void closeButtonPressed() override
+		{
+			app.systemRequestedQuit();
+		}
 
 	private:
 		JUCEApplication& app;
-
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 	};
 
 	std::unique_ptr <MainWindow> mainWindow;
 };
 
-START_JUCE_APPLICATION(CS120_2_2)
+START_JUCE_APPLICATION(AudioApp)

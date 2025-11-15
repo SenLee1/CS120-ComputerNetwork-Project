@@ -520,10 +520,10 @@ int main(int argc, char *argv[]) {
 
             // 处理结果
             if (flag == 2) {
-                std::cout << "\nReceive successfully！file has been saved."
+                std::cout << "\nReceive successfully!file has been saved."
                           << std::endl;
             } else if (flag == 3) {
-                std::cout << "\nReceiving failed！(wrong checksum or length)"
+                std::cout << "\nReceiving failed!(wrong checksum or length)"
                           << std::endl;
             } else if (flag == 9) {
                 std::cout << "\nReceiving stopped by hand" << std::endl;
