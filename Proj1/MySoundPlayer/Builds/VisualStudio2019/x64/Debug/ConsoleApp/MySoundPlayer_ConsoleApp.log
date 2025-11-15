@@ -1,8 +1,0 @@
-﻿  Main.cpp
-D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Source\Main.cpp(93,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Source\Main.cpp(94,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Source\Main.cpp(98,33): warning C4018: “<”: 有符号/无符号不匹配
-D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Source\Main.cpp(99,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Source\Main.cpp(360,26): warning C4100: “argv”: 未引用的形参
-D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Source\Main.cpp(360,14): warning C4100: “argc”: 未引用的形参
-  MySoundPlayer_ConsoleApp.vcxproj -> D:\Courses\4.1\CN\Projs\Proj1\MySoundPlayer\Builds\VisualStudio2019\x64\Debug\ConsoleApp\MySoundPlayer.exe

@@ -1,8 +1,0 @@
-﻿  Main.cpp
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(233,60): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(234,38): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(241,57): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(241,53): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(773,26): warning C4100: 'argv': 未引用的参数
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Source\Main.cpp(773,14): warning C4100: 'argc': 未引用的参数
-  MySoundPlayer_ConsoleApp.vcxproj -> D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj1\MySoundPlayer\Builds\VisualStudio2022\x64\Debug\ConsoleApp\MySoundPlayer.exe
