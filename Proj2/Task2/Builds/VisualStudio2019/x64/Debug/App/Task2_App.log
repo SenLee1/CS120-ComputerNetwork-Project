@@ -1,28 +1,70 @@
-﻿  MainComponent.cpp
+﻿  Main.cpp
+  MainComponent.cpp
 D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(215,48): warning C4458: “sampleBuffer”的声明隐藏了类成员
   (编译源文件“../../Source/MainComponent.cpp”)
-      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(237,21):
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(247,21):
       参见“MainComponent::sampleBuffer”的声明
   
 D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(220,28): warning C4458: “sampleRate”的声明隐藏了类成员
   (编译源文件“../../Source/MainComponent.cpp”)
-      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(238,9):
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(248,9):
       参见“MainComponent::sampleRate”的声明
   
 D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(225,26): warning C4458: “readPointer”的声明隐藏了类成员
   (编译源文件“../../Source/MainComponent.cpp”)
-      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(239,6):
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(250,6):
       参见“MainComponent::readPointer”的声明
   
 D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(230,27): warning C4458: “writePointer”的声明隐藏了类成员
   (编译源文件“../../Source/MainComponent.cpp”)
-      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(239,23):
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(251,6):
       参见“MainComponent::writePointer”的声明
   
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(64,71): warning C4458: “sampleRate”的声明隐藏了类成员
-      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(238,9):
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(235,29): warning C4458: “AckreadPointer”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(252,6):
+      参见“MainComponent::AckreadPointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(215,48): warning C4458: “sampleBuffer”的声明隐藏了类成员
+  (编译源文件“../../Source/Main.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(247,21):
+      参见“MainComponent::sampleBuffer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(240,30): warning C4458: “AckwritePointer”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(253,6):
+      参见“MainComponent::AckwritePointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(220,28): warning C4458: “sampleRate”的声明隐藏了类成员
+  (编译源文件“../../Source/Main.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(248,9):
       参见“MainComponent::sampleRate”的声明
   
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(64,71): warning C4100: 'sampleRate': 未引用的参数
-D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(64,39): warning C4100: 'samplesPerBlockExpected': 未引用的参数
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(225,26): warning C4458: “readPointer”的声明隐藏了类成员
+  (编译源文件“../../Source/Main.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(250,6):
+      参见“MainComponent::readPointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(230,27): warning C4458: “writePointer”的声明隐藏了类成员
+  (编译源文件“../../Source/Main.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(251,6):
+      参见“MainComponent::writePointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(235,29): warning C4458: “AckreadPointer”的声明隐藏了类成员
+  (编译源文件“../../Source/Main.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(252,6):
+      参见“MainComponent::AckreadPointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(240,30): warning C4458: “AckwritePointer”的声明隐藏了类成员
+  (编译源文件“../../Source/Main.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(253,6):
+      参见“MainComponent::AckwritePointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(68,71): warning C4458: “sampleRate”的声明隐藏了类成员
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(248,9):
+      参见“MainComponent::sampleRate”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(68,71): warning C4100: 'sampleRate': 未引用的参数
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(68,39): warning C4100: 'samplesPerBlockExpected': 未引用的参数
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\Main.cpp(18,38): warning C4100: 'commandLine': 未引用的参数
   Task2_App.vcxproj -> D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Builds\VisualStudio2019\x64\Debug\App\Task2.exe

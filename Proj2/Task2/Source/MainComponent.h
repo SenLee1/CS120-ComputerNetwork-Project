@@ -232,11 +232,25 @@ private:
 		this->writePointer = writePointer;
 	}
 
+	void setAckReadPointer(int AckreadPointer)
+	{
+		this->AckreadPointer = AckreadPointer;
+	}
+
+	void setAckWritePointer(int AckwritePointer)
+	{
+		this->AckwritePointer = AckwritePointer;
+	}
+
 	NodeState state;
 	TextButton openButton, sendButton, receiveButton, saveButton;
 	AudioSampleBuffer* sampleBuffer = nullptr;
 	double sampleRate = 48000;
-	int readPointer = 0, writePointer = 0;
+
+	int readPointer = 0;
+	int writePointer = 0;
+	int AckreadPointer = 0;
+	int AckwritePointer = 0;
 
 	vector<float> carrierWave, zeroWave;
 	vector<float> sentData, outputData;
@@ -247,7 +261,7 @@ private:
 	int timeoutTicks = 0;
 	int bitsReceived = 0;
 	int packagesReceived = 0;
-	bool begin = false;
+	bool dataBeginFlag = false;
 	bool preambleSuspected = false;
 	vector<float> preambleWave, ackWave;
 	bool isReceiving;
