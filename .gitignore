@@ -1,8 +1,4 @@
 l Studio files
 .vs/
 */**/.vs/
-# JUCE generated files
-JuceLibraryCode/
-**/JuceLibraryCode/
-*.jucer
-Builds/
+

@@ -1,0 +1,55 @@
+﻿  MainComponent.cpp
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(118,8): warning C4189: “count”: 局部变量已初始化但不引用
+  (编译源文件“../../Source/MainComponent.cpp”)
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(125,11): warning C4101: “input”: 未引用的局部变量
+  (编译源文件“../../Source/MainComponent.cpp”)
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(181,9): warning C4458: “sum”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(215,8):
+      参见“MainComponent::sum”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(198,48): warning C4458: “sampleBuffer”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(208,21):
+      参见“MainComponent::sampleBuffer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(200,28): warning C4458: “sampleRate”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(209,9):
+      参见“MainComponent::sampleRate”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(202,26): warning C4458: “readPointer”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(210,6):
+      参见“MainComponent::readPointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(204,27): warning C4458: “writePointer”的声明隐藏了类成员
+  (编译源文件“../../Source/MainComponent.cpp”)
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(210,23):
+      参见“MainComponent::writePointer”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(40,71): warning C4458: “sampleRate”的声明隐藏了类成员
+      D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.h(209,9):
+      参见“MainComponent::sampleRate”的声明
+  
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(44,29): warning C4244: “参数”: 从“double”转换到“_Ty”，可能丢失数据
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(44,29): warning C4244:         with
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(44,29): warning C4244:         [
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(44,29): warning C4244:             _Ty=float
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(44,29): warning C4244:         ]
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(45,26): warning C4244: “参数”: 从“double”转换到“_Ty”，可能丢失数据
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(45,26): warning C4244:         with
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(45,26): warning C4244:         [
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(45,26): warning C4244:             _Ty=float
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(45,26): warning C4244:         ]
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(52,144): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(40,71): warning C4100: 'sampleRate': 未引用的参数
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(40,39): warning C4100: 'samplesPerBlockExpected': 未引用的参数
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(80,9): warning C4189: “channelWritePointer”: 局部变量已初始化但不引用
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(81,9): warning C4189: “out”: 局部变量已初始化但不引用
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(76,10): warning C4189: “inBuffer”: 局部变量已初始化但不引用
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(79,9): warning C4189: “channelReadPointer”: 局部变量已初始化但不引用
+D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Source\MainComponent.cpp(77,10): warning C4189: “outBuffer”: 局部变量已初始化但不引用
+  Task2_App.vcxproj -> D:\Shanghaitech\2025Fall\CS120\CS120-ComputerNetwork-Project\Proj2\Task2\Builds\VisualStudio2019\x64\Debug\App\Task2.exe
