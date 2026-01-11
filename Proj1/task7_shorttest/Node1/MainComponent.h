@@ -1,7 +1,6 @@
 #pragma once
 #include "../Shared/PacketParams.h"
 #include <JuceHeader.h>
-#include <vector>
 
 class MainComponent : public juce::AudioAppComponent {
 public:
@@ -16,22 +15,12 @@ public:
   void resized() override;
 
 private:
-  void generateSignal(); // 核心生成函数：OFDM 版本
+  void generateSignal(); // 核心生成函数
 
-  // UI
-  juce::TextButton sendButton{"Send INPUT.txt (OFDM)"};
-
-  // 数据传输缓冲
+  juce::TextButton sendButton{"Send INPUT.txt"};
   std::vector<float> transmissionSignal;
   int playPosition = 0;
   bool isTransmitting = false;
-
-  // DSP 对象
-  juce::dsp::FFT forwardFFT{
-      Params::fftOrder}; // 用于 IFFT 操作 (JUCE FFT是双向的)
-
-  // 辅助函数：将 bits 映射到 QPSK 星座点
-  std::complex<float> mapQPSK(int twoBits);
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

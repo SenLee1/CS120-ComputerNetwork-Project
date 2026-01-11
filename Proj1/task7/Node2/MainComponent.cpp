@@ -47,17 +47,16 @@ void MainComponent::getNextAudioBlock(
 
 // --- 按照你的思路重写的逻辑 ---
 void MainComponent::processRecording() {
+  // 1. 基础信息打印
 
-  // 提高信号强度
   for (size_t i = 0; i < recordedAudio.size(); ++i) {
-    recordedAudio[i] *= 10.0f;
+    recordedAudio[i] *= 1.0f;
     // 简单的限幅保护
     if (recordedAudio[i] > 1.0f)
       recordedAudio[i] = 1.0f;
     if (recordedAudio[i] < -1.0f)
       recordedAudio[i] = -1.0f;
   }
-  // 1. 基础信息打印
   float totalSeconds = (float)recordedAudio.size() / Params::sampleRate;
   std::cout << "------------------------------------------------" << std::endl;
   std::cout << "Processing " << totalSeconds << "s (Dynamic Hill Climbing)..."
@@ -86,6 +85,9 @@ void MainComponent::processRecording() {
   // 动态搜索范围 (你提到的200点容忍度)
   const int PEAK_TOLERANCE_WINDOW = 200;
 
+  std::ofstream debugFile("DEBUG_WAVEFORM.csv");
+  // 写入表头：索引，原始音频，相关性分数，两者乘积
+  debugFile << "Index,RawSample,Score,RawTimesScore\n";
   // --- 主循环 ---
   while (scanPtr < maxSearch && chunksFound < expectedChunks) {
 
@@ -101,8 +103,20 @@ void MainComponent::processRecording() {
       energy = 0.00001f;
     float currentScore = (corr * corr) / energy;
 
+    // ==========================================================
+    // 2. [Debug] 写入文件逻辑
+    // ==========================================================
+    // 这里我们把当前扫描点的数据存下来
+    // 注意：因为你下面有 scanPtr += 10，所以这里存的数据是每隔10个点的采样
+    float rawVal = recordedAudio[scanPtr];
+    float productVal = rawVal * currentScore; // 你的需求：原始值 * 增强值
+
+    debugFile << scanPtr << "," << rawVal << "," << currentScore << ","
+              << productVal << "\n";
+    // ==========================================================
+
     // B. 触发逻辑
-    if (currentScore > 0.15f) {
+    if (currentScore > 0.1f) {
       // ---> 触发了！发现潜在的山坡
 
       // 初始化“当前最佳候选”
@@ -149,12 +163,32 @@ void MainComponent::processRecording() {
         checkPtr++;
       }
 
+      // 退出上面那个循环意味着：我们已经连续 200 个点没有发现比 bestPeakPtr
+      // 更高的了。 所以 bestPeakPtr 就是真正的局部最高峰 (Local Maxima)。
+
+      // // --- D. 能量校验 (确认不是噪音峰值) ---
+      // bool isRealSignal = false;
+      // int checkStart = bestPeakPtr + preambleLen + 100;
+      // float signalEnergy = 0.0f;
+      // for (int k = 0; k < 500 && (checkStart + k) < recordedAudio.size();
+      // ++k) {
+      //   float s = recordedAudio[checkStart + k];
+      //   signalEnergy += s * s;
+      // }
+      // signalEnergy /= 500;
+      //
+      // if (signalEnergy > 0.0005f) {
+      //   isRealSignal = true;
+      // }
+
+      // if (isRealSignal) {
+      // ---> 锁定并解码
       chunksFound++;
       std::cout << "[LOCKED] Chunk " << chunksFound << " at " << bestPeakPtr
                 << " (Score: " << bestPeakScore << ")" << std::endl;
 
       // --- 解调逻辑 (保持不变) ---
-      int readPtr = bestPeakPtr + preambleLen + 480;
+      int readPtr = bestPeakPtr + preambleLen + Params::Guard_len;
       std::vector<std::complex<float>> symbols;
       int symbolsToRead = (Params::CHUNK_SIZE / 4) * 7 + 1;
 
@@ -197,10 +231,12 @@ void MainComponent::processRecording() {
       totalBits += chunkData;
 
       // --- E. 跳过当前包 ---
-      // 跳过 100 bits 对应的长度 (约 22000 点)
-      scanPtr = bestPeakPtr + 22000;
+      // 跳过 600 bits 对应的长度 (约 55000 点)
+      // scanPtr = bestPeakPtr + 55000;
+      scanPtr = bestPeakPtr + Params::Sample_to_skip;
 
       continue; // 进入下一次主循环
+      // }
     }
 
     // 没触发，或者能量校验失败，快速往后扫
@@ -208,6 +244,9 @@ void MainComponent::processRecording() {
   }
 
   // --- 结尾处理 ---
+  debugFile.close();
+  std::cout << "[Debug] Data saved to DEBUG_WAVEFORM.csv" << std::endl;
+
   std::cout << "Decoded Total Bits: " << totalBits.length() << std::endl;
   if (totalBits.length() > Params::TOTAL_BITS)
     totalBits = totalBits.substr(0, Params::TOTAL_BITS);

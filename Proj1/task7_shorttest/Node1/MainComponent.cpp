@@ -48,11 +48,7 @@ void MainComponent::generateSignal() {
 
   std::ifstream inFile("D:\\Courses\\4.1\\CN\\Projs\\Proj1\\task7\\INPUT.txt");
 
-  std::string allDataBits;
-  if (inFile)
-    inFile >> allDataBits;
-  else
-    allDataBits = std::string(10000, '1');
+  std::string allDataBits = "1010101010101010";
 
   std::cout << "length of INPUT: " << allDataBits.length();
   // 截断或补齐

@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(AudioNetworkProject VERSION 0.0.1)
 
 # 引入 JUCE
-add_subdirectory(../JUCE JUCE)
+add_subdirectory("D:/Courses/4.1/CN/Settings/JUCE" JUCE)
 
 # 定义公共宏
 macro(setup_node name)

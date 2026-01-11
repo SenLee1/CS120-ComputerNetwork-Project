@@ -1,8 +1,6 @@
 #pragma once
 #include "../Shared/PacketParams.h"
 #include <JuceHeader.h>
-#include <complex>
-#include <vector>
 
 class MainComponent : public juce::AudioAppComponent {
 public:
@@ -17,21 +15,20 @@ public:
   void resized() override;
 
 private:
-  void processRecording(); // 核心处理逻辑
+  void debugDecodeFromCSV();
+  std::vector<float> preRollBuffer; // 用于保存触发前的那一小段声音
+  bool hasTriggered = false;        // 是否已经开始录音
+  int silenceCounter = 0;           // 连续静音计数器
+  const float TRIGGER_THRESHOLD = 0.01f; // 触发阈值 (音量大于这个才算开始)
+  const int SAMPLE_RATE = 48000;
+  void dumpRawAudio();
 
   juce::TextButton processButton{"Stop & Decode"};
   juce::Label statusLabel;
 
-  // 录音 Buffer
+  // 大容量 Buffer
   std::vector<float> recordedAudio;
   bool isRecording = true;
-
-  // --- OFDM DSP 对象 ---
-  // FFT 对象 (fftOrder 在 Params 中定义，为 9 -> 512点)
-  juce::dsp::FFT forwardFFT{Params::fftOrder};
-
-  // 辅助函数：根据相位判决出 bits
-  int decodeQPSK(std::complex<float> sym);
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

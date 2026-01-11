@@ -8,7 +8,7 @@ namespace Params {
 const double sampleRate = 48000.0;
 const double carrierFreq = 6000.0;
 const int baudRate = 1500;
-const int samplesPerSymbol = (int)(sampleRate / baudRate); // 48 samples
+const int samplesPerSymbol = (int)(sampleRate / baudRate); // 32 samples
 
 // 【配置】600 bits 一个包
 const int CHUNK_SIZE = 500;

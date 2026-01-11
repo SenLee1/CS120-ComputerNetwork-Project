@@ -15,7 +15,7 @@ const double carrierFreq = 4000.0;
 // 1500 -> 300。这意味着每个符号持续 ~3.3ms，足以抵抗大多数房间的回声。
 const int baudRate = 300;
 
-const int CHUNK_SIZE = 500;
+const int CHUNK_SIZE = 16;
 const int samplesPerSymbol = (int)(sampleRate / baudRate);
 const int encodedSymbolsCount = (Params::CHUNK_SIZE / 4) * 7 + 1;
 const int dataDurationSamples = encodedSymbolsCount * Params::samplesPerSymbol;
@@ -29,7 +29,7 @@ const int Guard_len = 0.1 * sampleRate;
 // 计算总跳过样本数 (用于接收端跳过已解码的包)
 const int Sample_to_skip = Preamble_len + Guard_len + dataDurationSamples;
 
-const int TOTAL_BITS = 10000;
+const int TOTAL_BITS = 16;
 
 // --- Hamming(7,4) 保持不变 ---
 static uint8_t encodeHamming(uint8_t nibble) {
